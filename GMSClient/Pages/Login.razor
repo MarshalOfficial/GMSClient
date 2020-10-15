@@ -2,7 +2,7 @@
 @layout LoginLayout
 @using GMSClient.Data
 @inject NavigationManager navigationManager
-@inject ILocalStorageService storageService
+@inject StateContainer StateContainer
 
 <center>
     <EditForm Model="@user" OnValidSubmit="@ValidateUser">
@@ -23,7 +23,7 @@
             <input type="password" class="form-control col-12" @bind="user.Password" placeholder="رمز عبور" />
         </div>
         <br />
-        <div class="col-12 row">            
+        <div class="col-12 row">
             <input type="submit" class="form-control col-12 btn btn-primary" value="ورود به سیستم" />
         </div>
         <br />
@@ -39,19 +39,9 @@
     public string LoginMesssage { get; set; }
 
 
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
-
     protected async override Task OnInitializedAsync()
     {
         user = new User();
-
-        //var token = await storageService.GetItemAsync<string>("token");
-
-        //if (!string.IsNullOrWhiteSpace(token))
-        //{
-        //    navigationManager.NavigateTo("/index");
-        //}
     }
 
     private async Task<bool> ValidateUser()
@@ -61,9 +51,9 @@
 
         if (data != null && !string.IsNullOrWhiteSpace(data.access_token))
         {
-            await storageService.SetItemAsync("User", data);
-            await storageService.SetItemAsync("token", data.access_token);
-
+            StateContainer.SetUser(data);
+            StateContainer.SetToken(data.access_token);
+         
             navigationManager.NavigateTo("/home");
         }
         else

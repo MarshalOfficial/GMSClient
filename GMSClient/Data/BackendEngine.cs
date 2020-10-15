@@ -45,7 +45,7 @@ namespace GMSClient.Data
         }
 
 
-        public static object Call(string procname, string param, string jwt)
+        public static string Call(string procname, string param, string jwt)
         {
             try
             {
