@@ -1,0 +1,77 @@
+﻿@page "/"
+@layout LoginLayout
+@using GMSClient.Data
+@inject NavigationManager navigationManager
+@inject ILocalStorageService storageService
+
+<center>
+    <EditForm Model="@user" OnValidSubmit="@ValidateUser">
+        <div>
+            <br /><br /><br /><br /><br />
+        </div>
+        <div>
+            <h3 style="font-weight:bold; color:purple">سامانه مدیریت باشگاه های ورزشی</h3>
+        </div>
+        <div>
+            <br />
+        </div>
+        <div class="col-12 row">
+            <input class="form-control col-12" @bind="user.UserName" placeholder="نام کاربری" />
+        </div>
+        <br />
+        <div class="col-12 row">
+            <input type="password" class="form-control col-12" @bind="user.Password" placeholder="رمز عبور" />
+        </div>
+        <br />
+        <div class="col-12 row">            
+            <input type="submit" class="form-control col-12 btn btn-primary" value="ورود به سیستم" />
+        </div>
+        <br />
+        <div class="col-12 row" style="text-align:left; font-weight:bold">
+            <span class="col-12">@LoginMesssage</span>
+        </div>
+    </EditForm>
+</center>
+
+@code {
+
+    private User user;
+    public string LoginMesssage { get; set; }
+
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        user = new User();
+
+        //var token = await storageService.GetItemAsync<string>("token");
+
+        //if (!string.IsNullOrWhiteSpace(token))
+        //{
+        //    navigationManager.NavigateTo("/index");
+        //}
+    }
+
+    private async Task<bool> ValidateUser()
+    {
+
+        var data = BackendEngine.Login(user.UserName, user.Password);
+
+        if (data != null && !string.IsNullOrWhiteSpace(data.access_token))
+        {
+            await storageService.SetItemAsync("User", data);
+            await storageService.SetItemAsync("token", data.access_token);
+
+            navigationManager.NavigateTo("/home");
+        }
+        else
+        {
+            LoginMesssage = "نام کاربری یا رمز عبور اشتباه است";
+        }
+
+        return await Task.FromResult(true);
+    }
+
+}
