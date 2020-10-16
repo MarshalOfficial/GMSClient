@@ -1,0 +1,14 @@
+﻿@page "/logout"
+@layout LoginLayout
+@using GMSClient.Data
+@inject NavigationManager navigationManager
+@inject StateContainer stateContainer
+
+@code {
+    protected async override Task OnInitializedAsync()
+    {
+        stateContainer.SetUser(null);
+        stateContainer.SetToken("");
+        navigationManager.NavigateTo("/");
+    }
+}

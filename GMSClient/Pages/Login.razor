@@ -2,7 +2,7 @@
 @layout LoginLayout
 @using GMSClient.Data
 @inject NavigationManager navigationManager
-@inject StateContainer StateContainer
+@inject StateContainer stateContainer
 
 <center>
     <EditForm Model="@user" OnValidSubmit="@ValidateUser">
@@ -51,8 +51,8 @@
 
         if (data != null && !string.IsNullOrWhiteSpace(data.access_token))
         {
-            StateContainer.SetUser(data);
-            StateContainer.SetToken(data.access_token);
+            stateContainer.SetUser(data);
+            stateContainer.SetToken(data.access_token);
          
             navigationManager.NavigateTo("/home");
         }

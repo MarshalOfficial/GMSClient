@@ -1,6 +1,18 @@
 ﻿@page "/home"
+@inject NavigationManager navigationManager
+@inject StateContainer stateContainer
+
 
 <h1>خوش آمدید</h1>
 
 
-@*<SurveyPrompt Title="How is Blazor working for you?" />*@
+@code {
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (string.IsNullOrWhiteSpace(stateContainer.Token))
+        {
+            navigationManager.NavigateTo("/");
+        }
+    }
+}

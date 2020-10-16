@@ -3,7 +3,7 @@
 
 @using GMSClient.Data
 @inject NavigationManager navigationManager
-@inject StateContainer StateContainer
+@inject StateContainer stateContainer
 
 <h1>مشتریان</h1>
 
@@ -92,12 +92,12 @@ else
 
     protected override async Task OnInitializedAsync()
     {       
-        if(string.IsNullOrWhiteSpace(StateContainer.Token))
+        if(string.IsNullOrWhiteSpace(stateContainer.Token))
         {
             navigationManager.NavigateTo("/");
         }
 
-        var data = BackendEngine.Call("ClientGetAll", "", StateContainer.Token);
+        var data = BackendEngine.Call("ClientGetAll", "", stateContainer.Token);
 
         customers = JsonConvert.DeserializeObject<Customer[]>(data);
 
