@@ -47,13 +47,13 @@
     private async Task<bool> ValidateUser()
     {
 
-        var data = BackendEngine.Login(user.UserName, user.Password);
+        var data = BackendEngine.Login(user.UserName, user.Password);   
 
         if (data != null && !string.IsNullOrWhiteSpace(data.access_token))
         {
             stateContainer.SetUser(data);
             stateContainer.SetToken(data.access_token);
-         
+
             navigationManager.NavigateTo("/home");
         }
         else

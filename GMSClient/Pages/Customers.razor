@@ -1,7 +1,6 @@
 ﻿@page "/customers"
 @layout MainLayout
 
-@using GMSClient.Data
 @inject NavigationManager navigationManager
 @inject StateContainer stateContainer
 
@@ -11,6 +10,7 @@
 @if (customers == null)
 {
     <p><em>Loading...</em></p>
+    <span class="col-12">@BackendMesssage</span>
 }
 else
 {
@@ -89,9 +89,10 @@ else
 
 @code {
     private Customer[] customers;
+    private string BackendMesssage;
 
     protected override async Task OnInitializedAsync()
-    {       
+    {
         if(string.IsNullOrWhiteSpace(stateContainer.Token))
         {
             navigationManager.NavigateTo("/");
@@ -99,9 +100,12 @@ else
 
         var data = BackendEngine.Call("ClientGetAll", "", stateContainer.Token);
 
-        customers = JsonConvert.DeserializeObject<Customer[]>(data);
 
-
+        var msg = data.GetBackendErrorMsg();
+        if (msg.Length > 0)
+            BackendMesssage = msg;
+        else
+            customers = JsonConvert.DeserializeObject<Customer[]>(data);
     }
 
 
