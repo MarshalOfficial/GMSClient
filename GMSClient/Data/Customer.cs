@@ -45,7 +45,7 @@ namespace GMSClient.Data
 
         public bool IsDeleted { get; set; }
 
-        public string Job_Title { get; set; }
+        public string JobTitle { get; set; }
 
         public string MembershipJoinTypeTitle { get; set; }
 

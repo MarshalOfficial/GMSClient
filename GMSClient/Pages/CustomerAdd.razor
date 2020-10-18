@@ -1,0 +1,72 @@
+﻿@page "/customeradd"
+@layout MainLayout
+
+@inject NavigationManager navigationManager
+@inject StateContainer stateContainer
+
+
+<h3>ایجاد مشتری جدید</h3>
+<center>
+    <EditForm Model="@customer">
+        <div>
+            <br />
+        </div>
+        <div class="col-12 row">
+            <input class="form-control col-12" @bind="customer.FirstName" placeholder="نام" />
+        </div>
+        <br />
+
+
+
+
+        <br />
+        <div class="col-12 row">
+            <input type="submit" class="form-control col-12 btn btn-primary" value="ثبت" @onclick="(()=>CreateCustomer())"/>
+        </div>
+        <div class="col-12 row">
+            <input type="submit" class="form-control col-12 btn btn-primary" value="انصراف" @onclick="(()=>Cancel())" />
+        </div>
+        <br />
+        <div class="col-12 row" style="text-align:left; font-weight:bold">
+            <span class="col-12">@BackendMesssage</span>
+        </div>
+    </EditForm>
+</center>
+
+
+
+@code {
+    private Customer customer;
+    public string BackendMesssage { get; set; }
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        customer = new Customer();
+        if (string.IsNullOrWhiteSpace(stateContainer.Token))
+        {
+            navigationManager.NavigateTo("/");
+        }
+    }
+
+    private async void Cancel()
+    {
+        navigationManager.NavigateTo("/customers");
+    }
+
+    private async Task<bool> CreateCustomer()
+    {
+
+        var jsondata = JsonConvert.SerializeObject(customer);
+
+        var data = BackendEngine.Call("ClientUpdate", jsondata, stateContainer.Token);
+
+        var msg = data.GetBackendErrorMsg();
+        if (msg.Length > 0)
+            BackendMesssage = msg;
+        else
+            navigationManager.NavigateTo("/customers");
+
+        return await Task.FromResult(true);
+    }
+}

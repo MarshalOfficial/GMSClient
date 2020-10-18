@@ -78,7 +78,7 @@ namespace GMSClient.Data
             }
             catch (Exception ex)
             {
-                return null;
+                return "[{\"Result\":\"Error\",\"Txt\":\"" + ex.Message + "\"}]";
             }
         }
     }
