@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace GMSClient.Data
 {
     public class Customer
@@ -7,16 +9,22 @@ namespace GMSClient.Data
 
         public long AccountTypeID { get; set; }
 
+        [Required]
+        [StringLength(50, ErrorMessage = "نام طولانی است")]
         public string FirstName { get; set; }
-
+        
+        [Required]
+        [StringLength(50, ErrorMessage = "نام خانوادگی طولانی است")]
         public string LastName { get; set; }
-
+        
         public DateTime? Birthdate { get; set; }
 
         public bool Gender { get; set; }
 
         public DateTime CreateDate { get; set; }
 
+        [Required]
+        [StringLength(11, ErrorMessage = "موبایل بایستی حداکثر یازده کاراکتر باشد")]
         public string Mobile { get; set; }
 
         public string Tel { get; set; }
@@ -57,6 +65,9 @@ namespace GMSClient.Data
 
         public string JoinDateFa { get; set; }
 
+        [Required]
+        public string BirthDateFa { get; set; }
+            
         public string GenderFa { get { return Gender ? "مرد" : "زن"; } }
     }
 }

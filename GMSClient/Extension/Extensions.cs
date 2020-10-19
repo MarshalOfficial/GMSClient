@@ -28,5 +28,17 @@ namespace GMSClient.Extension
                 return string.Empty;
             }
         }
+
+        public static long ToLong(this object str)
+        {
+            try
+            {
+                return Convert.ToInt64(str);
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
     }
 }
