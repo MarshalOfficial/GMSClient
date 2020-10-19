@@ -61,7 +61,7 @@ namespace GMSClient.Data
                 using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
                     string json = "{\"procname\":\"" + procname + "\"," +
-                                  "\"params\":\"" + param + "\"}";
+                                  "\"params\":" + param + "}";
 
                     streamWriter.Write(json);
                 }

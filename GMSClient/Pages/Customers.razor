@@ -99,7 +99,7 @@ else
             navigationManager.NavigateTo("/");
         }
 
-        var data = BackendEngine.Call("ClientGetAll", "", stateContainer.Token);
+        var data = BackendEngine.Call("ClientGetAll", "{}", stateContainer.Token);
 
 
         var msg = data.GetBackendErrorMsg();
