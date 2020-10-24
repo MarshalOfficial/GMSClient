@@ -1,0 +1,87 @@
+﻿@page "/products"
+@layout MainLayout
+
+@inject NavigationManager navigationManager
+@inject StateContainer stateContainer
+
+<h1>محصولات</h1>
+
+
+@if (products == null)
+{
+    <p><em>Loading...</em></p>
+    <span class="col-12">@BackendMesssage</span>
+}
+else
+{
+    <button class="btn-primary" @onclick="(()=>ShowProductAdd())">ایجاد محصول</button>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>کد محصول</th>
+                <th>نام محصول</th>
+                <th>مبلغ</th>
+                <th>تعداد جلسات</th>
+                <th>تاریخ شروع</th>
+                <th>تاریخ پایان</th>
+                <th>وضعیت</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in products)
+            {
+                <tr>
+                    <td>
+                        @item.ProductCode
+                    </td>
+                    <td>
+                        @item.ProductName
+                    </td>
+                    <td>@item.SalePriceFa</td>
+                    <td>
+                        @item.SessionCount
+                    </td>
+                    <td>
+                        @item.StartDateFa
+                    </td>
+                    <td>
+                        @item.EndDateFa
+                    </td>
+                    <td>
+                        @item.IsActiveFa
+                    </td>                    
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+
+@code {
+    private Product[] products;
+    private string BackendMesssage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (string.IsNullOrWhiteSpace(stateContainer.Token))
+        {
+            navigationManager.NavigateTo("/");
+        }
+
+        var data = BackendEngine.Call("ProductGetAll", "{}", stateContainer.Token);
+
+
+        var msg = data.GetBackendErrorMsg();
+        if (msg.Length > 0)
+            BackendMesssage = msg;
+        else
+            products = JsonConvert.DeserializeObject<Product[]>(data);
+    }
+
+    private async void ShowProductAdd()
+    {
+        navigationManager.NavigateTo("/productadd");
+    }
+
+}

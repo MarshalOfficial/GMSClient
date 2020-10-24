@@ -69,5 +69,6 @@ namespace GMSClient.Data
         public string BirthDateFa { get; set; }
             
         public string GenderFa { get { return Gender ? "مرد" : "زن"; } }
+
     }
 }
