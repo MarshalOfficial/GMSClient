@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace GMSClient.Data
 {
     public class Product
@@ -11,16 +13,20 @@ namespace GMSClient.Data
 
         public string ProductCode { get; set; }
 
+        [Required]
+        [StringLength(100, ErrorMessage = "نام طولانی است")]
         public string ProductName { get; set; }
 
         public double? BuyPrice { get; set; }
 
+        [Required]
         public double? SalePrice { get; set; }
 
         public double? SalePrice2 { get; set; }
 
         public string ProductBarCode { get; set; }
 
+        [Required]
         public int? SessionCount { get; set; }
 
         public DateTime? StartDate { get; set; }
@@ -33,6 +39,7 @@ namespace GMSClient.Data
 
         public string CreateDateFa { get; set; }
 
+        [Required]
         public string StartDateFa { get; set; }
 
         public string EndDateFa { get; set; }
