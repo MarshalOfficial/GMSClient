@@ -11,63 +11,83 @@
         <div>
             <br />
         </div>
-        <div class="col-12 row">
-            <input class="form-control col-12" @bind="customerPeriodicCheckup.RegDateFa" placeholder="تاریخ ثبت مثلا 1399/09/01" pattern="[0-9]{4}/(0[1-9]|1[012])/(0[1-9]|1[0-9]|2[0-9]|3[01])" data-valid-example="1399/09/01" />
+        <div class="form-row">
+            <div class="col-md-3 mb-3">
+                <input class="form-control col-12" @bind="customerPeriodicCheckup.RegDateFa" placeholder="تاریخ ثبت مثلا 1399/09/01" pattern="[0-9]{4}/(0[1-9]|1[012])/(0[1-9]|1[0-9]|2[0-9]|3[01])" data-valid-example="1399/09/01" />
+            </div>
+            <div class="col-md-1 mb-3">
+                <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.Height" placeholder="قد" />
+            </div>
+            <div class="col-md-1 mb-3">
+                <div class="input-group">
+                    <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.Weight" placeholder="وزن" />
+                </div>
+            </div>
+            <div class="col-md-1 mb-3">
+                <div class="input-group">
+                    <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.WaistSize" placeholder="دور کمر" />
+                </div>
+            </div>
+            <div class="col-md-1 mb-3">
+
+                <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.ABS" placeholder="دور شکم" />
+            </div>
+            <div class="col-md-1 mb-3">
+                <div class="input-group">
+                    <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.BUTT" placeholder="دور باسن" />
+                </div>
+            </div>
+            <div class="col-md-1 mb-3">
+                <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.Chest" placeholder="قفسه سینه" />
+            </div>
+
         </div>
-        <br />
-        <div class="col-12 row">
-            <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.Height" placeholder="قد" />
+
+        <div class="form-row">
+           
+            <div class="col-md-2 mb-3">
+                <div class="input-group">
+                    <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.RightArm" placeholder="بازوی راست" />
+                </div>
+            </div>
+            <div class="col-md-2 mb-3">
+                <div class="input-group">
+                    <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.LeftArm" placeholder="بازوی چپ" />
+                </div>
+            </div>
+            <div class="col-md-2 mb-3">
+                <div class="input-group">
+                    <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.RightThigh" placeholder="ران راست" />
+                </div>
+            </div>
+            <div class="col-md-2 mb-3">
+                <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.LeftThigh" placeholder="ران چپ" />
+            </div>
         </div>
-        <br />
-        <div class="col-12 row">
-            <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.Weight" placeholder="وزن" />
+        <div class="form-row">
+           
+
+            <div class="col-md-2 mb-3">
+                <div class="input-group">
+                    <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.RightCalves" placeholder="ساق راست" />
+                </div>
+            </div>
+            <div class="col-md-2 mb-3">
+                <div class="input-group">
+                    <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.LeftArm" placeholder="بازوی چپ" />
+                </div>
+            </div>
+            <div class="col-md-2 mb-3">
+                <div class="input-group">
+                    <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.LeftCalves" placeholder="ساق چپ" />
+                </div>
+            </div>
         </div>
-        <br />
-        <div class="col-12 row">
-            <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.WaistSize" placeholder="دور کمر" />
-        </div>
-        <br />
-        <div class="col-12 row">
-            <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.Chest" placeholder="قفسه سینه" />
-        </div>
-        <br />
-        <div class="col-12 row">
-            <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.ABS" placeholder="دور شکم" />
-        </div>
-        <br />
-        <div class="col-12 row">
-            <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.BUTT" placeholder="دور باسن" />
-        </div>
-        <br />
-        <div class="col-12 row">
-            <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.RightArm" placeholder="بازوی راست" />
-        </div>
-        <br />
-        <div class="col-12 row">
-            <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.LeftArm" placeholder="بازوی چپ" />
-        </div>
-        <br />
-        <div class="col-12 row">
-            <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.RightThigh" placeholder="ران راست" />
-        </div>
-        <br />
-        <div class="col-12 row">
-            <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.LeftThigh" placeholder="ران چپ" />
-        </div>
-        <br />
-        <div class="col-12 row">
-            <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.RightCalves" placeholder="ساق راست" />
-        </div>
-        <br />
-        <div class="col-12 row">
-            <input type="number" class="form-control col-12" @bind="customerPeriodicCheckup.LeftCalves" placeholder="ساق چپ" />
-        </div>
-        <br />
-        <div class="col-12 row">
-            <input type="submit" class="form-control col-12 btn btn-primary" value="ثبت" />
-        </div>
-        <div class="col-12 row">
-            <button type="button" class="form-control col-12 btn btn-primary" value="انصراف" @onclick="Cancel">انصراف</button>
+        
+        <div class="input-group">
+            <div class="mr-1"><button type="submit" class=" btn btn-success" value="ثبت">ثبت اطلاعات</button></div>
+
+            <button type="button" class=" btn btn-danger mr-2 px-1" value="انصراف" @onclick="Cancel">انصراف</button>
         </div>
         <br />
         <div class="col-12 row" style="text-align:left; font-weight:bold">

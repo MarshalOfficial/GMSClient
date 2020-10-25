@@ -2,6 +2,8 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    direction: rtl !important;
+    
 }
 
 a, .btn-link {
@@ -180,4 +182,12 @@ app {
         /* Never collapse the sidebar for wide screens */
         display: block;
     }
+}
+
+table {
+    font-size: 89%;
+}
+
+label {
+  
 }

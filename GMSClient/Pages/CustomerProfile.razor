@@ -13,71 +13,73 @@
 else
 {
     <h1>@lst.FirstOrDefault()?.FullName</h1>
-    <button class="btn-primary" @onclick="Cancel">بازگشت</button>
-    <button class="btn-primary" @onclick="ShowCustomerPeriodicCheckupAdd">ثبت رکورد جدید</button>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>تاریخ ثبت</th>
-                <th>قد</th>
-                <th>وزن</th>
-                <th>سایز کمر</th>
-                <th>قفسه سینه</th>
-                <th>دور شکم</th>
-                <th>باسن</th>
-                <th>بازوی راست</th>
-                <th>بازوی چپ</th>
-                <th>ران راست</th>
-                <th>ران چپ</th>
-                <th>ساق راست</th>
-                <th>ساق چپ</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in lst)
-            {
+    <button class="btn btn-primary py-2 my-2" @onclick="ShowCustomerPeriodicCheckupAdd">ثبت رکورد جدید</button>
+    <button class="btn btn-secondary py-2 my-2" @onclick="Cancel">بازگشت</button>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="thead-dark">
                 <tr>
-                    <td>
-                        @item.RegDateFa
-                    </td>
-                    <td>
-                        @item.Height
-                    </td>
-                    <td>@item.Weight</td>
-                    <td>
-                        @item.WaistSize
-                    </td>
-                    <td>
-                        @item.Chest
-                    </td>
-                    <td>
-                        @item.ABS
-                    </td>
-                    <td>
-                        @item.BUTT
-                    </td>
-                    <td>
-                        @item.RightArm
-                    </td>
-                    <td>
-                        @item.LeftArm
-                    </td>
-                    <td>
-                        @item.RightThigh
-                    </td>
-                    <td>
-                        @item.LeftThigh
-                    </td>
-                    <td>
-                        @item.RightCalves
-                    </td>
-                    <td>
-                        @item.LeftCalves
-                    </td>
+                    <th>تاریخ ثبت</th>
+                    <th>قد</th>
+                    <th>وزن</th>
+                    <th>سایز کمر</th>
+                    <th>قفسه سینه</th>
+                    <th>دور شکم</th>
+                    <th>باسن</th>
+                    <th>بازوی راست</th>
+                    <th>بازوی چپ</th>
+                    <th>ران راست</th>
+                    <th>ران چپ</th>
+                    <th>ساق راست</th>
+                    <th>ساق چپ</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in lst)
+                {
+                    <tr>
+                        <td>
+                            @item.RegDateFa
+                        </td>
+                        <td>
+                            @item.Height
+                        </td>
+                        <td>@item.Weight</td>
+                        <td>
+                            @item.WaistSize
+                        </td>
+                        <td>
+                            @item.Chest
+                        </td>
+                        <td>
+                            @item.ABS
+                        </td>
+                        <td>
+                            @item.BUTT
+                        </td>
+                        <td>
+                            @item.RightArm
+                        </td>
+                        <td>
+                            @item.LeftArm
+                        </td>
+                        <td>
+                            @item.RightThigh
+                        </td>
+                        <td>
+                            @item.LeftThigh
+                        </td>
+                        <td>
+                            @item.RightCalves
+                        </td>
+                        <td>
+                            @item.LeftCalves
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 
 }
 
