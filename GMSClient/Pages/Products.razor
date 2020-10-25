@@ -14,46 +14,48 @@
 }
 else
 {
-    <button class="btn-primary" @onclick="(()=>ShowProductAdd())">ایجاد محصول</button>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>کد محصول</th>
-                <th>نام محصول</th>
-                <th>مبلغ</th>
-                <th>تعداد جلسات</th>
-                <th>تاریخ شروع</th>
-                <th>تاریخ پایان</th>
-                <th>وضعیت</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in products)
-            {
+    <button class="btn btn-primary py-2 my-2" @onclick="(()=>ShowProductAdd())">ایجاد محصول</button>
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="thead-dark">
                 <tr>
-                    <td>
-                        @item.ProductCode
-                    </td>
-                    <td>
-                        @item.ProductName
-                    </td>
-                    <td>@item.SalePriceFa</td>
-                    <td>
-                        @item.SessionCount
-                    </td>
-                    <td>
-                        @item.StartDateFa
-                    </td>
-                    <td>
-                        @item.EndDateFa
-                    </td>
-                    <td>
-                        @item.IsActiveFa
-                    </td>                    
+                    <th>کد محصول</th>
+                    <th>نام محصول</th>
+                    <th>مبلغ</th>
+                    <th>تعداد جلسات</th>
+                    <th>تاریخ شروع</th>
+                    <th>تاریخ پایان</th>
+                    <th>وضعیت</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in products)
+                {
+                    <tr>
+                        <td>
+                            @item.ProductCode
+                        </td>
+                        <td>
+                            @item.ProductName
+                        </td>
+                        <td>@item.SalePriceFa</td>
+                        <td>
+                            @item.SessionCount
+                        </td>
+                        <td>
+                            @item.StartDateFa
+                        </td>
+                        <td>
+                            @item.EndDateFa
+                        </td>
+                        <td>
+                            @item.IsActiveFa
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 }
 
 
