@@ -18,6 +18,7 @@ else
     <table class="table">
         <thead>
             <tr>
+                <th>پرونده</th>
                 <th>نام</th>
                 <th>نام خانوادگی</th>
                 <th>تاریخ عضویت</th>
@@ -38,51 +39,54 @@ else
         <tbody>
             @foreach (var item in customers)
             {
-                <tr>
-                    <td>
-                        @item.FirstName
-                    </td>
-                    <td>
-                        @item.LastName
-                    </td>
-                    <td>@item.JoinDateFa</td>
-                    <td>
-                        @item.GenderFa
-                    </td>
-                    <td>
-                        @item.Mobile
-                    </td>
-                    <td>
-                        @item.Tel
-                    </td>
-                    <td>
-                        @item.PostalCode
-                    </td>
-                    <td>
-                        @item.Email
-                    </td>
-                    <td>
-                        @item.Telegram
-                    </td>
-                    <td>
-                        @item.Instagram
-                    </td>
-                    <td>
-                        @item.Address
-                    </td>
-                    <td>
-                        @item.JobTitle
-                    </td>
-                    <td>
-                        @item.MembershipJoinTypeTitle
-                    </td>
-                    <td>
-                        @item.ReferralFullName
-                    </td>
-                    <td>
-                        @item.VisitorFullName
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    <button class="btn-primary" @onclick="@(e => ShowCustomerProfile(item.ID))" >پروفایل ورزشی</button>
+                </td>
+                <td>
+                    @item.FirstName
+                </td>
+                <td>
+                    @item.LastName
+                </td>
+                <td>@item.JoinDateFa</td>
+                <td>
+                    @item.GenderFa
+                </td>
+                <td>
+                    @item.Mobile
+                </td>
+                <td>
+                    @item.Tel
+                </td>
+                <td>
+                    @item.PostalCode
+                </td>
+                <td>
+                    @item.Email
+                </td>
+                <td>
+                    @item.Telegram
+                </td>
+                <td>
+                    @item.Instagram
+                </td>
+                <td>
+                    @item.Address
+                </td>
+                <td>
+                    @item.JobTitle
+                </td>
+                <td>
+                    @item.MembershipJoinTypeTitle
+                </td>
+                <td>
+                    @item.ReferralFullName
+                </td>
+                <td>
+                    @item.VisitorFullName
+                </td>
+            </tr>
             }
         </tbody>
     </table>
@@ -112,6 +116,11 @@ else
     private async void ShowCustomerAdd()
     {
         navigationManager.NavigateTo("/customeradd");
+    }
+
+    private async void ShowCustomerProfile(long id)
+    {
+        navigationManager.NavigateTo("/customerprofile/" + id.ToString());
     }
 
 
