@@ -1,0 +1,152 @@
+﻿@page "/shiftpatternconfig/{patternid}"
+@layout MainLayout
+
+@inject NavigationManager navigationManager
+@inject StateContainer stateContainer
+
+<h1>تنظیم ساعت شیفت الگوی کاری</h1>
+@if (lst == null)
+{
+<p><em>Loading...</em></p>
+                <span class="col-12">@BackendMesssage</span> }
+            else
+            {
+<h1>@lst.FirstOrDefault()?.HeaderTitle</h1> @*<button class="btn btn-primary py-2 my-2" @onclick="ShowCustomerPeriodicCheckupAdd">ثبت رکورد جدید</button>
+                    <button class="btn btn-secondary py-2 my-2" @onclick="Cancel">بازگشت</button>*@
+
+                <EditForm Model="@ShiftPatternDetailsobj" OnValidSubmit="AddRecord">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
+                    <div class="form-row">
+                        <div class="col-md-4 mb-3">
+                            <input class="form-control fa-times" type="time" @bind="ShiftPatternDetailsobj.FromTimeF" placeholder="از ساعت" />
+                            <input class="form-control fa-times" type="time" @bind="ShiftPatternDetailsobj.ToTimeF" placeholder="تا ساعت" />
+                            <input class="form-control" type="checkbox" @bind="ShiftPatternDetailsobj.Gender" placeholder="مرد؟" />
+                            <div class="mr-1">
+                                <button type="submit" class=" btn btn-success" value="ثبت">ثبت</button>
+                                <button type="button" class=" btn btn-danger mr-2 px-1" @onclick="Cancel">بازگشت</button>
+                            </div>
+
+                        </div>
+                        <div class="col-12 row" style="text-align:right; font-weight:bold">
+                            <span class="col-12">@BackendMesssage</span>
+                        </div>
+                    </div>
+                    <br />
+                </EditForm>
+
+
+
+
+
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="thead-dark">
+                                            <tr>
+                                                <th>از ساعت</th>
+                                                <th>تا ساعت</th>
+                                                <th>جنسیت</th>
+                                                <th>عملیات</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in lst)
+                                            {
+                                            <tr>
+                                                <td>
+                                                    @item.FromTime
+                                                </td>
+                                                <td>
+                                                    @item.ToTime
+                                                </td>
+                                                <td>@item.GenderFa</td>
+                                                <td>                                                    
+                                                    <button class="btn btn-dark py-1 my-1" @onclick="@(e => DeleteRecord(item.ID))">حذف</button>                                                    
+                                                </td>
+                                            </tr>
+}
+                                        </tbody>
+                                    </table>
+                                </div>}
+
+
+
+@code { [Parameter]
+    public string PatternID { get; set; }
+    private string BackendMesssage;
+    private ShiftPatternDetails[] lst;
+    private ShiftPatternDetails ShiftPatternDetailsobj;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (string.IsNullOrWhiteSpace(stateContainer.Token))
+        {
+            navigationManager.NavigateTo("/");
+        }
+
+        LoadData();
+    }
+
+    private void LoadData()
+    {
+        ShiftPatternDetailsobj = new ShiftPatternDetails();
+
+        var param = "{" + string.Format("\"{0}\": {1}", "ShiftPatternHeaderID", PatternID.ToLong()) + "}";
+
+        var data = BackendEngine.Call("ShiftPatternDetailsGet", param, stateContainer.Token);
+
+
+        var msg = data.GetBackendErrorMsg();
+        if (msg.Length > 0)
+            BackendMesssage = msg;
+        else
+            lst = JsonConvert.DeserializeObject<ShiftPatternDetails[]>(data);
+    }
+
+
+    private async void Cancel()
+    {
+        navigationManager.NavigateTo("/shiftpatterns");
+    }
+    
+
+    private async Task<bool> AddRecord()
+    {
+
+        ShiftPatternDetailsobj.FromTime = ShiftPatternDetailsobj.FromTimeF.Value.TimeOfDay;
+        ShiftPatternDetailsobj.ToTime = ShiftPatternDetailsobj.ToTimeF.Value.TimeOfDay;
+        ShiftPatternDetailsobj.ShiftPatternHeaderID = PatternID.ToLong();
+
+        var jsondata = JsonConvert.SerializeObject(ShiftPatternDetailsobj);
+
+
+        var data = BackendEngine.Call("ShiftPatternDetailsAdd", jsondata, stateContainer.Token);
+
+        var msg = data.GetBackendErrorMsg();
+        if (msg.Length > 0)
+            BackendMesssage = msg;
+        else
+            LoadData();
+
+        return await Task.FromResult(true);
+    }
+
+
+    private async Task<bool> DeleteRecord(long id)
+    {
+        ShiftPatternDetailsobj = lst.FirstOrDefault(l => l.ID == id);
+        var jsondata = JsonConvert.SerializeObject(ShiftPatternDetailsobj);
+
+        var data = BackendEngine.Call("ShiftPatternDetailsDelete", jsondata, stateContainer.Token);
+
+        var msg = data.GetBackendErrorMsg();
+        if (msg.Length > 0)
+            BackendMesssage = msg;
+        else
+            LoadData();
+
+        return await Task.FromResult(true);
+    }
+
+    }
