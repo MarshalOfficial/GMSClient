@@ -11,33 +11,49 @@
                 <span class="col-12">@BackendMesssage</span> }
             else
             {
-<button type="button" class="btn btn-primary py-2 my-2" @onclick="(()=>ShowCustomerAdd())">ایجاد مشتری</button>
+<EditForm Model="@shiftPatternHeaderobj" OnValidSubmit="CreateRecord">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-row">
+        <div class="col-md-4 mb-3">
+            <input class="form-control" @bind="shiftPatternHeaderobj.Title" placeholder="عنوان" />
+            <div class="mr-1"><button type="submit" class=" btn btn-success" value="ثبت">ثبت جدید</button></div>
+        </div>
+        <div class="col-12 row" style="text-align:right; font-weight:bold">
+            <span class="col-12">@BackendMesssage</span>
+        </div>
+    </div>
+    <br />    
+</EditForm>
+                                
 
-                <div class="table-responsive">
-                    <table class="table table-hover" style="table-layout: auto; width: 100%; ">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th scope="col">عنوان</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in shiftPatternHeaders)
-                            {
-            <tr>
-                <td>
-                    @item.Title
-                </td>
-                <td>
-                    <button class="btn btn-dark py-1 my-1" @onclick="@(e => ShowCustomerProfile(item.ID))">پروفایل ورزشی</button>
-                </td>
-            </tr>}
-                        </tbody>
-                    </table>
-                </div>}
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover" style="table-layout: auto; width: 100%; ">
+                                                        <thead class="thead-dark">
+                                                            <tr>
+                                                                <th scope="col">عنوان</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var item in shiftPatternHeaders)
+                                                            {
+                                            <tr>
+                                                <td>
+                                                    @item.Title
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-dark py-1 my-1" @onclick="@(e => ShowCustomerProfile(item.ID))">تنظیم شیفت ها</button>
+                                                </td>
+                                            </tr>}
+                                                        </tbody>
+                                                    </table>
+                                                </div>}
 
 
 
-@code { private ShiftPatternHeader[] shiftPatternHeaders;
+@code { 
+    private ShiftPatternHeader shiftPatternHeaderobj;
+    private ShiftPatternHeader[] shiftPatternHeaders;
     private string BackendMesssage;
 
     protected override async Task OnInitializedAsync()
@@ -47,6 +63,14 @@
             navigationManager.NavigateTo("/");
         }
 
+        LoadData();
+
+    }
+
+    private void LoadData()
+    {
+        shiftPatternHeaderobj = new ShiftPatternHeader();
+
         var data = BackendEngine.Call("ShiftPatternHeaderGetAll", "{}", stateContainer.Token);
 
 
@@ -55,7 +79,6 @@
             BackendMesssage = msg;
         else
             shiftPatternHeaders = JsonConvert.DeserializeObject<ShiftPatternHeader[]>(data);
-
     }
 
     private async void ShowCustomerAdd()
@@ -66,5 +89,24 @@
     private async void ShowCustomerProfile(long id)
     {
         navigationManager.NavigateTo("/customerprofile/" + id.ToString());
-    } 
-}
+    }
+
+    private async Task<bool> CreateRecord()
+    {
+
+        shiftPatternHeaderobj.ID = 0;
+        var jsondata = JsonConvert.SerializeObject(shiftPatternHeaderobj);
+
+        var data = BackendEngine.Call("ShiftPatternHeaderUpdate", jsondata, stateContainer.Token);
+
+        var msg = data.GetBackendErrorMsg();
+        if (msg.Length > 0)
+            BackendMesssage = msg;
+        else
+            LoadData();
+
+        return await Task.FromResult(true);
+    }
+
+
+    }
