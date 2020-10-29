@@ -4,7 +4,7 @@
 @inject NavigationManager navigationManager
 @inject StateContainer stateContainer
 
-<h1>الگوی زمانی جلسات</h1>
+<h1>تنظیم الگوی شیفتها</h1>
 @if (shiftPatternHeaders == null)
 {
 <p><em>Loading...</em></p>
@@ -48,7 +48,7 @@ else
                                 <td>
                                     <button class="btn btn-dark py-1 my-1" @onclick="@(e => LoadForUpdate(item.ID))">ویرایش</button>
                                     <button class="btn btn-dark py-1 my-1" @onclick="@(e => DeleteRecord(item.ID))">حذف</button>
-                                    <button class="btn btn-dark py-1 my-1" @onclick="@(e => ShowPatternConfig(item.ID))">تنظیم شیفت ها</button>
+                                    <button class="btn btn-dark py-1 my-1" @onclick="@(e => ShowPatternConfig(item.ID))">تنظیم ساعت ها</button>
                                 </td>
                             </tr>
 }
