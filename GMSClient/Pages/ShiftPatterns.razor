@@ -3,27 +3,28 @@
 
 @inject NavigationManager navigationManager
 @inject StateContainer stateContainer
+@inject NotificationService notificationService
 
 <h1>تنظیم الگوی شیفتها</h1>
+<RadzenNotification />
 @if (shiftPatternHeaders == null)
 {
 <p><em>Loading...</em></p>
-<span class="col-12">@BackendMesssage</span> }
+}
 else
 {
+
 <EditForm Model="@shiftPatternHeaderobj" OnValidSubmit="UpdateRecord">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="form-row">
         <div class="col-md-4 mb-3">
             <input class="form-control" @bind="shiftPatternHeaderobj.Title" placeholder="عنوان" />
-            <div class="mr-1"><button type="submit" class=" btn btn-success" value="ثبت">ثبت/ویرایش</button>
-                              <button type="button" class=" btn btn-danger mr-2 px-1" @onclick="ClearValue">خالی کردن مقدار</button>
+            <div class="mr-1">
+                <button type="submit" class=" btn btn-success" value="ثبت">ثبت/ویرایش</button>
+                <button type="button" class=" btn btn-danger mr-2 px-1" @onclick="ClearValue">خالی کردن مقدار</button>
             </div>
-            
-        </div>
-        <div class="col-12 row" style="text-align:right; font-weight:bold">
-            <span class="col-12">@BackendMesssage</span>
+
         </div>
     </div>
     <br />
@@ -41,25 +42,22 @@ else
                         <tbody>
                             @foreach (var item in shiftPatternHeaders)
                             {
-                            <tr>
-                                <td>
-                                    @item.Title
-                                </td>
-                                <td>
-                                    <button class="btn btn-dark py-1 my-1" @onclick="@(e => LoadForUpdate(item.ID))">ویرایش</button>
-                                    <button class="btn btn-dark py-1 my-1" @onclick="@(e => DeleteRecord(item.ID))">حذف</button>
-                                    <button class="btn btn-dark py-1 my-1" @onclick="@(e => ShowPatternConfig(item.ID))">تنظیم ساعت ها</button>
-                                </td>
-                            </tr>
-}
+            <tr>
+                <td>
+                    @item.Title
+                </td>
+                <td>
+                    <button class="btn btn-dark py-1 my-1" @onclick="@(e => LoadForUpdate(item.ID))">ویرایش</button>
+                    <button class="btn btn-dark py-1 my-1" @onclick="@(e => DeleteRecord(item.ID))">حذف</button>
+                    <button class="btn btn-dark py-1 my-1" @onclick="@(e => ShowPatternConfig(item.ID))">تنظیم ساعت ها</button>
+                </td>
+            </tr>}
                         </tbody>
                     </table>
                 </div>}
 
 
-
-@code {
-    private ShiftPatternHeader shiftPatternHeaderobj;
+@code { private ShiftPatternHeader shiftPatternHeaderobj;
     private ShiftPatternHeader[] shiftPatternHeaders;
     private string BackendMesssage;
 
@@ -74,7 +72,7 @@ else
 
     }
 
-    private void LoadData()
+    private async Task LoadData()
     {
         shiftPatternHeaderobj = new ShiftPatternHeader();
 
@@ -83,7 +81,10 @@ else
 
         var msg = data.GetBackendErrorMsg();
         if (msg.Length > 0)
+        {
             BackendMesssage = msg;
+            await ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = BackendMesssage, Duration = 4000 });
+        }
         else
             shiftPatternHeaders = JsonConvert.DeserializeObject<ShiftPatternHeader[]>(data);
     }
@@ -110,11 +111,7 @@ else
 
         var data = BackendEngine.Call("ShiftPatternHeaderDelete", jsondata, stateContainer.Token);
 
-        var msg = data.GetBackendErrorMsg();
-        if (msg.Length > 0)
-            BackendMesssage = msg;
-        else
-            LoadData();
+        await ProcessBackendResultData(data);
 
         return await Task.FromResult(true);
     }
@@ -125,11 +122,30 @@ else
 
         var data = BackendEngine.Call("ShiftPatternHeaderUpdate", jsondata, stateContainer.Token);
 
-        var msg = data.GetBackendErrorMsg();
-        if (msg.Length > 0)
-            BackendMesssage = msg;
-        else
-            LoadData();
+        await ProcessBackendResultData(data);
 
         return await Task.FromResult(true);
+    }
+
+
+    private async Task ProcessBackendResultData(string data)
+    {
+        var msg = data.GetBackendErrorMsg();
+        if (msg.Length > 0)
+        {
+            BackendMesssage = msg;
+            await ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = BackendMesssage, Duration = 4000 });
+        }
+        else
+        {
+            await ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = " موفقیت انجام شد", Duration = 4000 });
+            await LoadData();
+        }
+    }
+
+
+    async Task ShowNotification(NotificationMessage message)
+    {
+        notificationService.Notify(message);
+        await InvokeAsync(() => { StateHasChanged(); });
     } }
