@@ -52,5 +52,17 @@ namespace GMSClient.Extension
                 return 0;
             }
         }
+
+        public static bool ToBool(this object str)
+        {
+            try
+            {
+                return Convert.ToBoolean(str);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }
