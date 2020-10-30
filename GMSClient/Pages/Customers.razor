@@ -3,130 +3,138 @@
 
 @inject NavigationManager navigationManager
 @inject StateContainer stateContainer
+@inject NotificationService notificationService
 
 <h1>مشتریان</h1>
-
-
+<RadzenNotification />
 @if (customers == null)
 {
-    <p><em>Loading...</em></p>
-    <span class="col-12">@BackendMesssage</span>
-}
-else
-{
-    <button type="button" class="btn btn-primary py-2 my-2" @onclick="(()=>ShowCustomerAdd())">ایجاد مشتری</button>
+<p><em>Loading...</em></p> }
+            else
+            {
+<button type="button" class="btn btn-primary py-2 my-2" @onclick="(()=>ShowCustomerAdd())">ایجاد مشتری</button>
 
-    <div class="table-responsive">
-        <table class="table table-hover" style="table-layout: auto; width: 100%; ">
-            <thead class="thead-dark">
-                <tr>
-                    <th scope="col">نام</th>
-                    <th scope="col">نام خانوادگی</th>
-                    <th scope="col">تاریخ عضویت</th>
-                    <th scope="col">جنسیت</th>
-                    <th scope="col">موبایل</th>
-                    <th scope="col">تلفن</th>
-                    <th scope="col">کد پستی</th>
-                    <th scope="col">ایمیل</th>
-                    <th scope="col">تلگرام</th>
-                    <th scope="col">اینستاگرام</th>
-                    <th scope="col">آدرس</th>
-                    <th scope="col">شغل</th>
-                    <th scope="col">نحوه آشنایی</th>
-                    <th scope="col">معرف</th>
-                    <th scope="col">ویزیتور</th>
-                    <th scope="col">پرونده</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in customers)
+                <div class="table-responsive">
+                    <table class="table table-hover" style="table-layout: auto; width: 100%; ">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">نام</th>
+                                <th scope="col">نام خانوادگی</th>
+                                <th scope="col">تاریخ عضویت</th>
+                                <th scope="col">جنسیت</th>
+                                <th scope="col">موبایل</th>
+                                <th scope="col">تلفن</th>
+                                <th scope="col">کد پستی</th>
+                                <th scope="col">ایمیل</th>
+                                <th scope="col">تلگرام</th>
+                                <th scope="col">اینستاگرام</th>
+                                <th scope="col">آدرس</th>
+                                <th scope="col">شغل</th>
+                                <th scope="col">نحوه آشنایی</th>
+                                <th scope="col">معرف</th>
+                                <th scope="col">ویزیتور</th>
+                                <th scope="col">پرونده</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in customers)
+                            {
+            <tr>
+                <td>
+                    @item.FirstName
+                </td>
+                <td>
+                    @item.LastName
+                </td>
+                <td>@item.JoinDateFa</td>
+                <td>
+                    @item.GenderFa
+                </td>
+                <td>
+                    @item.Mobile
+                </td>
+                <td>
+                    @item.Tel
+                </td>
+                <td>
+                    @item.PostalCode
+                </td>
+                <td>
+                    @item.Email
+                </td>
+                <td>
+                    @item.Telegram
+                </td>
+                <td>
+                    @item.Instagram
+                </td>
+                <td>
+                    @item.Address
+                </td>
+                <td>
+                    @item.JobTitle
+                </td>
+                <td>
+                    @item.MembershipJoinTypeTitle
+                </td>
+                <td>
+                    @item.ReferralFullName
+                </td>
+                <td>
+                    @item.VisitorFullName
+                </td>
+                <td>
+                    <button class="btn btn-dark py-1 my-1" @onclick="@(e => ShowCustomerProfile(item.ID))">پروفایل ورزشی</button>
+                </td>
+            </tr>                }
+                        </tbody>
+                    </table>
+                </div>}
+
+@code { private Customer[] customers;
+            private string BackendMesssage;
+
+            protected override async Task OnInitializedAsync()
+            {
+                if (string.IsNullOrWhiteSpace(stateContainer.Token))
                 {
-                    <tr>
-                        <td>
-                            @item.FirstName
-                        </td>
-                        <td>
-                            @item.LastName
-                        </td>
-                        <td>@item.JoinDateFa</td>
-                        <td>
-                            @item.GenderFa
-                        </td>
-                        <td>
-                            @item.Mobile
-                        </td>
-                        <td>
-                            @item.Tel
-                        </td>
-                        <td>
-                            @item.PostalCode
-                        </td>
-                        <td>
-                            @item.Email
-                        </td>
-                        <td>
-                            @item.Telegram
-                        </td>
-                        <td>
-                            @item.Instagram
-                        </td>
-                        <td>
-                            @item.Address
-                        </td>
-                        <td>
-                            @item.JobTitle
-                        </td>
-                        <td>
-                            @item.MembershipJoinTypeTitle
-                        </td>
-                        <td>
-                            @item.ReferralFullName
-                        </td>
-                        <td>
-                            @item.VisitorFullName
-                        </td>
-                        <td>
-                            <button class="btn btn-dark py-1 my-1" @onclick="@(e => ShowCustomerProfile(item.ID))">پروفایل ورزشی</button>
-                        </td>
-                    </tr>
+                    navigationManager.NavigateTo("/");
                 }
-            </tbody>
-        </table>
-    </div>
+
+                await LoadData();
+            }
+
+            private async Task LoadData()
+            {
+                var data = BackendEngine.Call("ClientGetAll", "{}", stateContainer.Token);
+
+
+                var msg = data.GetBackendErrorMsg();
+                if (msg.Length > 0)
+                {
+                    BackendMesssage = msg;
+                    await ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = BackendMesssage, Duration = 4000 });
+                }
+                else
+                    customers = JsonConvert.DeserializeObject<Customer[]>(data);
+
+            }
+
+
+            private async void ShowCustomerAdd()
+            {
+                navigationManager.NavigateTo("/customeradd");
+            }
+
+            private async void ShowCustomerProfile(long id)
+            {
+                navigationManager.NavigateTo("/customerprofile/" + id.ToString());
+            }
 
 
 
-}
-
-@code {
-    private Customer[] customers;
-    private string BackendMesssage;
-
-    protected override async Task OnInitializedAsync()
-    {
-        if (string.IsNullOrWhiteSpace(stateContainer.Token))
-        {
-            navigationManager.NavigateTo("/");
-        }
-
-        var data = BackendEngine.Call("ClientGetAll", "{}", stateContainer.Token);
-
-
-        var msg = data.GetBackendErrorMsg();
-        if (msg.Length > 0)
-            BackendMesssage = msg;
-        else
-            customers = JsonConvert.DeserializeObject<Customer[]>(data);
-    }
-
-    private async void ShowCustomerAdd()
-    {
-        navigationManager.NavigateTo("/customeradd");
-    }
-
-    private async void ShowCustomerProfile(long id)
-    {
-        navigationManager.NavigateTo("/customerprofile/" + id.ToString());
-    }
-
-}
+            async Task ShowNotification(NotificationMessage message)
+            {
+                notificationService.Notify(message);
+                await InvokeAsync(() => { StateHasChanged(); });
+            } }

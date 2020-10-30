@@ -3,88 +3,84 @@
 
 @inject NavigationManager navigationManager
 @inject StateContainer stateContainer
+@inject NotificationService notificationService
 
 <h1>پروفایل ورزشی</h1>
+<RadzenNotification />
 @if (lst == null)
 {
-    <p><em>Loading...</em></p>
-    <span class="col-12">@BackendMesssage</span>
-}
-else
-{
-    <h1>@lst.FirstOrDefault()?.FullName</h1>
-    <button class="btn btn-primary py-2 my-2" @onclick="ShowCustomerPeriodicCheckupAdd">ثبت رکورد جدید</button>
-    <button class="btn btn-secondary py-2 my-2" @onclick="Cancel">بازگشت</button>
-    <div class="table-responsive">
-        <table class="table table-hover">
-            <thead class="thead-dark">
-                <tr>
-                    <th>تاریخ ثبت</th>
-                    <th>قد</th>
-                    <th>وزن</th>
-                    <th>سایز کمر</th>
-                    <th>قفسه سینه</th>
-                    <th>دور شکم</th>
-                    <th>باسن</th>
-                    <th>بازوی راست</th>
-                    <th>بازوی چپ</th>
-                    <th>ران راست</th>
-                    <th>ران چپ</th>
-                    <th>ساق راست</th>
-                    <th>ساق چپ</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in lst)
-                {
-                    <tr>
-                        <td>
-                            @item.RegDateFa
-                        </td>
-                        <td>
-                            @item.Height
-                        </td>
-                        <td>@item.Weight</td>
-                        <td>
-                            @item.WaistSize
-                        </td>
-                        <td>
-                            @item.Chest
-                        </td>
-                        <td>
-                            @item.ABS
-                        </td>
-                        <td>
-                            @item.BUTT
-                        </td>
-                        <td>
-                            @item.RightArm
-                        </td>
-                        <td>
-                            @item.LeftArm
-                        </td>
-                        <td>
-                            @item.RightThigh
-                        </td>
-                        <td>
-                            @item.LeftThigh
-                        </td>
-                        <td>
-                            @item.RightCalves
-                        </td>
-                        <td>
-                            @item.LeftCalves
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+<p><em>Loading...</em></p> }
+            else
+            {
+<h1>@lst.FirstOrDefault()?.FullName</h1>
+                <button class="btn btn-primary py-2 my-2" @onclick="ShowCustomerPeriodicCheckupAdd">ثبت رکورد جدید</button>
+                                <button class="btn btn-secondary py-2 my-2" @onclick="Cancel">بازگشت</button>
+                                                <div class="table-responsive">
+                                                    <table class="table table-hover">
+                                                        <thead class="thead-dark">
+                                                            <tr>
+                                                                <th>تاریخ ثبت</th>
+                                                                <th>قد</th>
+                                                                <th>وزن</th>
+                                                                <th>سایز کمر</th>
+                                                                <th>قفسه سینه</th>
+                                                                <th>دور شکم</th>
+                                                                <th>باسن</th>
+                                                                <th>بازوی راست</th>
+                                                                <th>بازوی چپ</th>
+                                                                <th>ران راست</th>
+                                                                <th>ران چپ</th>
+                                                                <th>ساق راست</th>
+                                                                <th>ساق چپ</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @foreach (var item in lst)
+                                                            {
+                                            <tr>
+                                                <td>
+                                                    @item.RegDateFa
+                                                </td>
+                                                <td>
+                                                    @item.Height
+                                                </td>
+                                                <td>@item.Weight</td>
+                                                <td>
+                                                    @item.WaistSize
+                                                </td>
+                                                <td>
+                                                    @item.Chest
+                                                </td>
+                                                <td>
+                                                    @item.ABS
+                                                </td>
+                                                <td>
+                                                    @item.BUTT
+                                                </td>
+                                                <td>
+                                                    @item.RightArm
+                                                </td>
+                                                <td>
+                                                    @item.LeftArm
+                                                </td>
+                                                <td>
+                                                    @item.RightThigh
+                                                </td>
+                                                <td>
+                                                    @item.LeftThigh
+                                                </td>
+                                                <td>
+                                                    @item.RightCalves
+                                                </td>
+                                                <td>
+                                                    @item.LeftCalves
+                                                </td>
+                                            </tr>                }
+                                                        </tbody>
+                                                    </table>
+                                                </div>}
 
-}
-
-@code {
-    [Parameter]
+@code { [Parameter]
     public string CustomerID { get; set; }
     private string BackendMesssage;
     private CustomerPeriodicCheckup[] lst;
@@ -109,6 +105,25 @@ else
             lst = JsonConvert.DeserializeObject<CustomerPeriodicCheckup[]>(data);
     }
 
+
+    private async Task LoadData()
+    {
+        var param = "{" + string.Format("\"{0}\": {1}", "customerid", CustomerID.ToLong()) + "}";
+
+        var data = BackendEngine.Call("ClientPeriodicCheckupGet", param, stateContainer.Token);
+
+
+        var msg = data.GetBackendErrorMsg();
+        if (msg.Length > 0)
+        {
+            BackendMesssage = msg;
+            await ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = BackendMesssage, Duration = 4000 });
+        }
+        else
+            lst = JsonConvert.DeserializeObject<CustomerPeriodicCheckup[]>(data);
+        
+    }
+
     private async void ShowCustomerPeriodicCheckupAdd()
     {
         navigationManager.NavigateTo("/customerprofileadd/" + CustomerID);
@@ -119,4 +134,9 @@ else
         navigationManager.NavigateTo("/customers");
     }
 
-}
+
+    async Task ShowNotification(NotificationMessage message)
+    {
+        notificationService.Notify(message);
+        await InvokeAsync(() => { StateHasChanged(); });
+    } }
