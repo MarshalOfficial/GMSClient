@@ -138,7 +138,7 @@ else
         }
         else
         {
-            await ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = " موفقیت انجام شد", Duration = 4000 });
+            await ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = Extensions.SucceedMessage, Duration = 4000 });
             await LoadData();
         }
     }

@@ -8,7 +8,9 @@ namespace GMSClient.Extension
 {
     public static class Extensions
     {
-        
+
+        public static string SucceedMessage = @"با موفقیت انجام شد";
+
         public static string GetBackendErrorMsg(this string json)
         {
             try

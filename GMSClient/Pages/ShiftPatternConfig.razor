@@ -3,16 +3,19 @@
 
 @inject NavigationManager navigationManager
 @inject StateContainer stateContainer
+@inject NotificationService notificationService
 
 <h1>تنظیم ساعت شیفت الگوی کاری</h1>
+<RadzenNotification />
 @if (lst == null)
 {
 <p><em>Loading...</em></p>
-                <span class="col-12">@BackendMesssage</span> }
-            else
-            {
+}
+else
+{
+
 <h1>@lst.FirstOrDefault()?.HeaderTitle</h1> @*<button class="btn btn-primary py-2 my-2" @onclick="ShowCustomerPeriodicCheckupAdd">ثبت رکورد جدید</button>
-                    <button class="btn btn-secondary py-2 my-2" @onclick="Cancel">بازگشت</button>*@
+    <button class="btn btn-secondary py-2 my-2" @onclick="Cancel">بازگشت</button>*@
 
                 <EditForm Model="@ShiftPatternDetailsobj" OnValidSubmit="AddRecord">
                     <DataAnnotationsValidator />
@@ -27,9 +30,6 @@
                                 <button type="button" class=" btn btn-danger mr-2 px-1" @onclick="Cancel">بازگشت</button>
                             </div>
 
-                        </div>
-                        <div class="col-12 row" style="text-align:right; font-weight:bold">
-                            <span class="col-12">@BackendMesssage</span>
                         </div>
                     </div>
                     <br />
@@ -53,19 +53,18 @@
                                         <tbody>
                                             @foreach (var item in lst)
                                             {
-                                            <tr>
-                                                <td>
-                                                    @item.FromTime
-                                                </td>
-                                                <td>
-                                                    @item.ToTime
-                                                </td>
-                                                <td>@item.GenderFa</td>
-                                                <td>                                                    
-                                                    <button class="btn btn-dark py-1 my-1" @onclick="@(e => DeleteRecord(item.ID))">حذف</button>                                                    
-                                                </td>
-                                            </tr>
-}
+                            <tr>
+                                <td>
+                                    @item.FromTime
+                                </td>
+                                <td>
+                                    @item.ToTime
+                                </td>
+                                <td>@item.GenderFa</td>
+                                <td>
+                                    <button class="btn btn-dark py-1 my-1" @onclick="@(e => DeleteRecord(item.ID))">حذف</button>
+                                </td>
+                            </tr>}
                                         </tbody>
                                     </table>
                                 </div>}
@@ -88,7 +87,7 @@
         LoadData();
     }
 
-    private void LoadData()
+    private async Task LoadData()
     {
         ShiftPatternDetailsobj = new ShiftPatternDetails();
 
@@ -96,12 +95,15 @@
 
         var data = BackendEngine.Call("ShiftPatternDetailsGet", param, stateContainer.Token);
 
-
         var msg = data.GetBackendErrorMsg();
         if (msg.Length > 0)
+        {
             BackendMesssage = msg;
+            await ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = BackendMesssage, Duration = 4000 });
+        }
         else
             lst = JsonConvert.DeserializeObject<ShiftPatternDetails[]>(data);
+
     }
 
 
@@ -109,7 +111,7 @@
     {
         navigationManager.NavigateTo("/shiftpatterns");
     }
-    
+
 
     private async Task<bool> AddRecord()
     {
@@ -123,11 +125,7 @@
 
         var data = BackendEngine.Call("ShiftPatternDetailsAdd", jsondata, stateContainer.Token);
 
-        var msg = data.GetBackendErrorMsg();
-        if (msg.Length > 0)
-            BackendMesssage = msg;
-        else
-            LoadData();
+        await ProcessBackendResultData(data);
 
         return await Task.FromResult(true);
     }
@@ -140,13 +138,42 @@
 
         var data = BackendEngine.Call("ShiftPatternDetailsDelete", jsondata, stateContainer.Token);
 
-        var msg = data.GetBackendErrorMsg();
-        if (msg.Length > 0)
-            BackendMesssage = msg;
-        else
-            LoadData();
+        await ProcessBackendResultData(data);
 
         return await Task.FromResult(true);
     }
+
+
+    private async Task ProcessBackendResultData(string data)
+    {
+        var msg = data.GetBackendErrorMsg();
+        if (msg.Length > 0)
+        {
+            BackendMesssage = msg;
+            await ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = BackendMesssage, Duration = 4000 });
+        }
+        else
+        {
+            await ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = Extensions.SucceedMessage, Duration = 4000 });
+            await LoadData();
+        }
+    }
+
+
+    async Task ShowNotification(NotificationMessage message)
+    {
+        notificationService.Notify(message);
+        await InvokeAsync(() => { StateHasChanged(); });
+    }
+
+
+
+
+
+
+
+
+
+
 
     }
