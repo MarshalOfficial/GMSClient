@@ -7,6 +7,7 @@
 @inject DialogService dialogService
 
 <h1>تنظیم الگوی شیفتها</h1>
+<RadzenDialog />
 @if (shiftPatternHeaders == null)
 {
 <p><em>Loading...</em></p> }
@@ -47,7 +48,7 @@ else
                 </td>
                 <td>
                     <button class="btn btn-dark py-1 my-1" @onclick="@(e => LoadForUpdate(item.ID))">ویرایش</button>
-                    <button class="btn btn-dark py-1 my-1" @onclick="@(e => ShowDeleteDialog(item.ID))">حذف</button>
+                    <button class="btn btn-dark py-1 my-1" @onclick="@(e => DeleteRecord(item.ID))">حذف</button>
                     <button class="btn btn-dark py-1 my-1" @onclick="@(e => ShowPatternConfig(item.ID))">تنظیم ساعت ها</button>
                 </td>
             </tr>}
@@ -60,11 +61,6 @@ else
     private ShiftPatternHeader[] shiftPatternHeaders;
     private string BackendMesssage;
 
-    protected override void OnInitialized()
-    {
-        dialogService.OnOpen += Open;
-        dialogService.OnClose += Close;
-    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -109,22 +105,7 @@ else
         shiftPatternHeaderobj = new ShiftPatternHeader();
     }
 
-
-    void Open(string title, Type type, Dictionary<string, object> parameters, DialogOptions options)
-    {
-        StateHasChanged();
-    }
-
-
-    void Close(dynamic result)
-    {
-        if(result != null && ((object)result).ToLong() > 0)
-        {
-            DeleteRecord(((object)result).ToLong());
-        }
-        StateHasChanged();
-    }
-
+  
     private async Task DeleteRecord(long id)
     {
         shiftPatternHeaderobj = shiftPatternHeaders.FirstOrDefault(l => l.ID == id);
@@ -134,17 +115,7 @@ else
 
         await ProcessBackendResultData(data);
     }
-
-    async Task ShowDeleteDialog(long id) => await dialogService.OpenAsync("حذف می شود", ds =>
-    @<RadzenCard Style="padding: 20px;">
-         <p Style="margin-bottom: 10px;">آیا اطمینان دارید؟</p>
-        <div class="row">
-            <div class="col-md-12">
-                <RadzenButton Text="بله" Click="()=> ds.Close(id)" Style="margin-bottom: 10px; width: 150px" />
-                <RadzenButton Text="خیر" Click="()=> ds.Close(0)" ButtonStyle="ButtonStyle.Secondary" Style="margin-bottom: 10px; width: 150px" />
-            </div>
-        </div>
-    </RadzenCard>);
+  
         
 
 private async Task UpdateRecord()

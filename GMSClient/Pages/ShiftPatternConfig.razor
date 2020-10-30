@@ -4,12 +4,13 @@
 @inject NavigationManager navigationManager
 @inject StateContainer stateContainer
 @inject NotificationService notificationService
+@inject DialogService dialogService
 
 <h1>تنظیم ساعت شیفت الگوی کاری</h1>
+<RadzenDialog />
 @if (lst == null)
 {
-<p><em>Loading...</em></p>
-}
+<p><em>Loading...</em></p> }
 else
 {
 
@@ -63,18 +64,20 @@ else
                                 <td>
                                     <button class="btn btn-dark py-1 my-1" @onclick="@(e => DeleteRecord(item.ID))">حذف</button>
                                 </td>
-                            </tr>}
+                            </tr>
+}
                                         </tbody>
                                     </table>
                                 </div>}
 
 
 
-@code { [Parameter]
+@code {[Parameter]
     public string PatternID { get; set; }
     private string BackendMesssage;
     private ShiftPatternDetails[] lst;
     private ShiftPatternDetails ShiftPatternDetailsobj;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -130,6 +133,9 @@ else
     }
 
 
+
+
+
     private async Task<bool> DeleteRecord(long id)
     {
         ShiftPatternDetailsobj = lst.FirstOrDefault(l => l.ID == id);
@@ -143,30 +149,27 @@ else
     }
 
 
-    private async Task ProcessBackendResultData(string data)
-    {
-        var msg = data.GetBackendErrorMsg();
-        if (msg.Length > 0)
-        {
-            BackendMesssage = msg;
-            await ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = BackendMesssage, Duration = 4000 });
-        }
-        else
-        {
-            await ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = Extensions.SucceedMessage, Duration = 4000 });
-            await LoadData();
-        }
-    }
+private async Task ProcessBackendResultData(string data)
+{
+var msg = data.GetBackendErrorMsg();
+if (msg.Length > 0)
+{
+   BackendMesssage = msg;
+   await ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = BackendMesssage, Duration = 4000 });
+}
+else
+{
+   await ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = Extensions.SucceedMessage, Duration = 4000 });
+   await LoadData();
+}
+}
 
 
-    async Task ShowNotification(NotificationMessage message)
-    {
-        notificationService.Notify(message);
-        await InvokeAsync(() => { StateHasChanged(); });
-    }
-
-
-
+async Task ShowNotification(NotificationMessage message)
+{
+notificationService.Notify(message);
+await InvokeAsync(() => { StateHasChanged(); });
+}
 
 
 
@@ -175,4 +178,7 @@ else
 
 
 
-    }
+
+
+
+}
