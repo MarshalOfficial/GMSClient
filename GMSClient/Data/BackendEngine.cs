@@ -49,6 +49,8 @@ namespace GMSClient.Data
         {
             try
             {
+                // call api with json body 
+
                 var APIBackendBase = Startup.APIURL;
 
                 string result;
