@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace GMSClient.Data
 {
     public class BackendEngine
-    {        
+    {
         public static TokenEntity Login(string username, string password)
         {
             try
@@ -15,7 +15,7 @@ namespace GMSClient.Data
                 var APIBackendBase = Startup.APIURL;
 
                 string result;
-                
+
                 var httpWebRequest = (HttpWebRequest)WebRequest.Create(APIBackendBase + "/token");
                 httpWebRequest.ContentType = "application/json";
                 httpWebRequest.Method = "POST";
