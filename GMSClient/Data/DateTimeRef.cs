@@ -16,7 +16,10 @@ namespace GMSClient.Data
 
         public long ShiftPatterHeaderID { get; set; }
 
-        public string ShiftPatterHeaderTitle { get; set; }    
+        public string PatternTitle { get; set; }
+
+        public long? PatternID { get; set; }
+     
 
     }
 }
