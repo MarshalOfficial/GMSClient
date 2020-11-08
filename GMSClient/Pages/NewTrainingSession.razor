@@ -1,0 +1,90 @@
+﻿@page "/newtrainingsession"
+@layout MainLayout
+
+@inject NavigationManager navigationManager
+@inject StateContainer stateContainer
+@inject NotificationService notificationService
+
+<RadzenSteps>
+    <Steps>
+        <RadzenStepsItem Text="مشتریان">
+            <h3>انتخاب مشتری</h3>
+            <RadzenGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@customers" TItem="Customer" Value="@customer" RowSelect="@(args => customer = args)">
+                <Columns>
+                    <RadzenGridColumn TItem="Customer" Property="FullName" Title="نام مشتری" />
+                </Columns>
+            </RadzenGrid>
+        </RadzenStepsItem>
+
+        <RadzenStepsItem Text="دوره ها" Disabled="@(customer == null)">
+            <h3>انتخاب دوره</h3>
+            <RadzenGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@products" TItem="Product" Value="@product" RowSelect="@(args => product = args)">
+                <Columns>
+                    <RadzenGridColumn TItem="Product" Property="ProductName" Title="نام دوره" />
+                </Columns>
+            </RadzenGrid>
+
+        </RadzenStepsItem>
+
+
+    </Steps>
+</RadzenSteps>
+
+
+
+
+@code { 
+
+    private Customer[] customers;
+    private Product[] products;
+    Customer customer;
+    Product product;
+    private string BackendMesssage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (string.IsNullOrWhiteSpace(stateContainer.Token))
+        {
+            navigationManager.NavigateTo("/");
+        }
+
+        await LoadData();
+
+         ProductsGet();
+    }
+
+    private async Task LoadData()
+    {
+        var data = BackendEngine.Call("ClientGetAll", "{}", stateContainer.Token);
+
+
+        var msg = data.GetBackendErrorMsg();
+        if (msg.Length > 0)
+        {
+            BackendMesssage = msg;
+            await ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = BackendMesssage, Duration = 4000 });
+        }
+        else
+            customers = JsonConvert.DeserializeObject<Customer[]>(data);
+
+    }
+
+    private async Task ProductsGet ()
+    {
+        var data = BackendEngine.Call("ProductGetAll", "{}", stateContainer.Token);
+
+
+        var msg = data.GetBackendErrorMsg();
+        if (msg.Length > 0)
+            BackendMesssage = msg;
+        else
+            products = JsonConvert.DeserializeObject<Product[]>(data);
+
+    }
+
+
+    async Task ShowNotification(NotificationMessage message)
+    {
+        notificationService.Notify(message);
+        await InvokeAsync(() => { StateHasChanged(); });
+    } }
