@@ -9,7 +9,7 @@
     <Steps>
         <RadzenStepsItem Text="مشتریان">
             <h3>انتخاب مشتری</h3>
-            <RadzenGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@customers" TItem="Customer" Value="@customer" RowSelect="@(args => customer = args)">
+            <RadzenGrid ColumnWidth="200px" Style="cursor:pointer" AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@customers" TItem="Customer" Value="@customer" RowSelect="@(args => customer = args)">
                 <Columns>
                     <RadzenGridColumn TItem="Customer" Property="FullName" Title="نام مشتری" />
                 </Columns>
@@ -18,12 +18,53 @@
 
         <RadzenStepsItem Text="دوره ها" Disabled="@(customer == null)">
             <h3>انتخاب دوره</h3>
-            <RadzenGrid ColumnWidth="200px" AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@products" TItem="Product" Value="@product" RowSelect="@(args => product = args)">
+            <RadzenGrid ColumnWidth="200px"  Style="cursor:pointer" AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@products" TItem="Product" Value="@product" RowSelect="@(args => product = args)">
                 <Columns>
                     <RadzenGridColumn TItem="Product" Property="ProductName" Title="نام دوره" />
                 </Columns>
             </RadzenGrid>
 
+        </RadzenStepsItem>
+
+
+        <RadzenStepsItem Text="فاکتور" Disabled="@(product == null)">
+            <h3>ایجاد فاکتور</h3>
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <div class="input-group">
+                        <input class="form-control masked" @bind="saleInvoiceCreateObject.Inv_Date" placeholder="تاریخ ثبت فاکتور مثلا 1399/11/30" pattern="[0-9]{4}/(0[1-9]|1[012])/(0[1-9]|1[0-9]|2[0-9]|3[01])" data-valid-example="1399/11/30" />
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="input-group">
+                        <select class="form-control" @onchange="@(e => saleInvoiceCreateObject.VisitorID = e.Value.ToLong())">
+                            <option value="" disabled selected>انتخاب ویزیتور</option>
+                            @foreach (var element in visitors)
+                            {
+
+                                <option value="@element.ID">@element.FullName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <div class="input-group form-group">
+                     
+
+                        <input type="t" class="form-control col-12" @bind="@saleInvoiceCreateObject.Reduction"  placeholder="مبلغ تخفیف" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-md-4 mb-3">
+                    <div class="input-group">
+                        <textarea style="width: 450px; height:104px" placeholder="توضیحات..." @bind="@saleInvoiceCreateObject.Inv_Memo"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="mr-1"><button @onclick="@SaleInvoiceCreate" class=" btn btn-primary m-b-15" value="ثبت">ثبت فاکتور</button></div>
         </RadzenStepsItem>
 
 
@@ -37,6 +78,8 @@
 
     private Customer[] customers;
     private Product[] products;
+    private Customer[] visitors;
+    private SaleInvoiceCreate saleInvoiceCreateObject;
     Customer customer;
     Product product;
     private string BackendMesssage;
@@ -48,9 +91,13 @@
             navigationManager.NavigateTo("/");
         }
 
+        saleInvoiceCreateObject = new SaleInvoiceCreate();
+
         await LoadData();
 
-         ProductsGet();
+        await ProductsGet();
+
+        VisitorsGetAll();
     }
 
     private async Task LoadData()
@@ -79,6 +126,43 @@
             BackendMesssage = msg;
         else
             products = JsonConvert.DeserializeObject<Product[]>(data);
+
+    }
+
+    private async Task VisitorsGetAll()
+    {
+        var data = BackendEngine.Call("VisitorGetAll", "{}", stateContainer.Token);
+
+
+        var msg = data.GetBackendErrorMsg();
+        if (msg.Length > 0)
+            BackendMesssage = msg;
+        else
+            visitors = JsonConvert.DeserializeObject<Customer[]>(data);
+
+    }
+
+    private async Task SaleInvoiceCreate()
+    {
+
+        saleInvoiceCreateObject.AccountID = customer.ID;
+        saleInvoiceCreateObject.ProductID = product.ProductID;
+
+        var jsndata = JsonConvert.SerializeObject(saleInvoiceCreateObject);
+
+        var data = BackendEngine.Call("SaleInvoiceCreate", jsndata, stateContainer.Token);
+
+        var msg = data.GetBackendErrorMsg();
+
+
+
+        if (msg.Length > 0) {
+            BackendMesssage = msg;
+            await ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Error, Summary = Extensions.SucceedMessage, Duration = 4000 });
+        } else {
+            await ShowNotification(new NotificationMessage() { Severity = NotificationSeverity.Success, Summary = Extensions.SucceedMessage, Duration = 4000 });
+            navigationManager.NavigateTo("/home");
+        }
 
     }
 
